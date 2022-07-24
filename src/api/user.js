@@ -12,3 +12,7 @@ export const getUserInfoApi = () => request({
     method: 'post',
     url: '/sys/profile',
 })
+
+export const getUserInfoByIdApi = (id) => request({
+    url: '/sys/user/' + id,
+})

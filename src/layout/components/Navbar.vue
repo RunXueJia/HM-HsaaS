@@ -11,8 +11,8 @@
 		<div class="right-menu">
 			<el-dropdown class="avatar-container" trigger="click">
 				<div class="avatar-wrapper">
-					<img src="@/assets/common/bigUserHeader.png" class="user-avatar" />
-					<span class="name">管理员</span>
+					<img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar" />
+					<span class="name">{{userInfo.username}}</span>
 					<i class="el-icon-caret-bottom" style="color:#fff" />
 				</div>
 				<el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -32,24 +32,30 @@
 </template>
 
 <script>
-	import { mapGetters } from "vuex";
+	import { mapGetters, mapState } from "vuex";
 	import Breadcrumb from "@/components/Breadcrumb";
 	import Hamburger from "@/components/Hamburger";
 
 	export default {
+		data() {
+			return {
+				defaultImg: require("@/assets/common/huangchengzi.png"),
+			};
+		},
 		components: {
 			Breadcrumb,
 			Hamburger,
 		},
 		computed: {
-			...mapGetters(["sidebar", "avatar"]),
+			...mapState("user", ["userInfo"]),
+			...mapGetters(["sidebar", "staffPhoto"]),
 		},
 		methods: {
 			toggleSideBar() {
 				this.$store.dispatch("app/toggleSideBar");
 			},
 			async logout() {
-				await this.$store.dispatch("user/logout");
+				await this.$store.dispatch("user/quit");
 				this.$router.push(`/login?redirect=${this.$route.fullPath}`);
 			},
 		},
