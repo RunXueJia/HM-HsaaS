@@ -41,7 +41,7 @@ module.exports = {
     // before: require('./mock/mock-server.js')
     proxy: {
       '/api': {
-        target: 'http://ihrm-java.itheima.net/',
+        target: 'http://ihrm.itheima.net/',
         changeOrigin: true,
         // pathRewrite: {
         //   '^api': '',
