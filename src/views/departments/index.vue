@@ -7,10 +7,16 @@
 		<br />
 		<!-- 下面就是树形控件内容了 -->
 		<el-tree :data="departs" :props="{label: 'name',}">
-			<TreeTools @AddDepart="AddDepart" slot-scope="{data}" :Data="data"></TreeTools>
+			<TreeTools
+				@UpdateList="initData"
+				@EditDepart="EditDepart"
+				@AddDepart="AddDepart"
+				slot-scope="{data}"
+				:Data="data"
+			></TreeTools>
 		</el-tree>
 		<!-- 弹出框 -->
-		<ArtWindow ref="window"></ArtWindow>
+		<ArtWindow @UpdateList="initData" ref="window"></ArtWindow>
 		<!--/ 弹出框  -->
 	</el-card>
 </template>
@@ -18,7 +24,7 @@
 <script>
 	import ArtWindow from "./components/art-window.vue";
 	import TreeTools from "./components/treetools.vue";
-	import { getDepartmentListApi } from "@/api/department";
+	import { getDepartmentListApi, getDepartmentInfoApi } from "@/api/department";
 	import { ToTreeObj } from "@/utils/MyFunction";
 	export default {
 		name: "HRSaasIndex",
@@ -47,8 +53,12 @@
 			},
 			AddDepart(item) {
 				this.$refs.window.dialogVisible = true;
-				console.log(item.id);
 				this.$refs.window.formData.pid = item.id;
+			},
+			async EditDepart(id) {
+				this.$refs.window.dialogVisible = true;
+				const res = await getDepartmentInfoApi(id);
+				this.$refs.window.formData = res;
 			},
 		},
 	};

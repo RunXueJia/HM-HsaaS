@@ -3,19 +3,22 @@ import request from '@/utils/request'
 
 export const getDepartmentListApi = () => request({
     url: '/company/department',
-    methods: 'get'
+    method: 'get'
 })
 export const AddDepartmentApi = (data) => request({
     url: '/company/department',
-    methods: 'post',
+    method: 'post',
     data
 })
 export const EditDepartmentApi = (data) => request({
     url: '/company/department/' + data.id,
-    methods: 'put',
+    method: 'put',
     data
 })
 export const DelDepartmentApi = (id) => request({
     url: '/company/department/' + id,
-    methods: 'delete'
+    method: 'delete'
+})
+export const getDepartmentInfoApi = (id) => request({
+    url: '/company/department/' + id,
 })

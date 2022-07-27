@@ -28,6 +28,7 @@
 </template>
 
 <script>
+	import { DelDepartmentApi } from "@/api/department";
 	export default {
 		name: "HRSaasTreetools",
 		props: {
@@ -47,10 +48,18 @@
 		mounted() {},
 
 		methods: {
-			ClickHandler(val) {
+			async ClickHandler(val) {
 				if (val === "add") {
 					this.$emit("AddDepart", this.Data);
-					console.log("添加");
+				}
+				if (val === "edit") {
+					this.$emit("EditDepart", this.Data.id);
+				}
+				if (val === "del") {
+					await this.$confirm("确定删除吗");
+					await DelDepartmentApi(this.Data.id);
+					this.$message.success("删除成功");
+					this.$emit("UpdateList");
 				}
 			},
 		},
