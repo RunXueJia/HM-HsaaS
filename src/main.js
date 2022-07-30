@@ -19,7 +19,14 @@ import * as directive from '@/directive'
 Object.keys(directive).forEach(key => {
   Vue.directive(key, directive[key])
 })
-
+//引入过滤器
+import * as filters from '@/utils/filters'
+Object.keys(filters).forEach(key => {
+  Vue.filter(key, filters[key])
+})
+//引入全局组件
+import compontnes from '@/components'
+Vue.use(compontnes)
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
