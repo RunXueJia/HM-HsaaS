@@ -1,68 +1,70 @@
 <template>
-	<el-card class="tree-card">
-		<!-- 用了一个行列布局 -->
-		<TreeTools @AddDepart="AddDepart" :isRoot="true" :Data="company"></TreeTools>
-		<br />
-		<hr />
-		<br />
-		<!-- 下面就是树形控件内容了 -->
-		<el-tree :data="departs" :props="{label: 'name',}">
-			<TreeTools
-				@UpdateList="initData"
-				@EditDepart="EditDepart"
-				@AddDepart="AddDepart"
-				slot-scope="{data}"
-				:Data="data"
-			></TreeTools>
-		</el-tree>
-		<!-- 弹出框 -->
-		<ArtWindow @UpdateList="initData" ref="window"></ArtWindow>
-		<!--/ 弹出框  -->
-	</el-card>
+	<div class="department">
+		<div class="app-container">
+			<el-card class="tree-card">
+				<treeTool @EditDept="EditDept" @addDept="AddDeptFn" :isRoot="true" :treeNode="company"></treeTool>
+				<hr />
+				<br />
+				<!--  -->
+				<el-tree :data="departs" :props="{label: 'name',}">
+					<treeTool
+						@updatelist="initData"
+						@EditDept="EditDept"
+						@addDept="AddDeptFn"
+						slot-scope="{data}"
+						:treeNode="data"
+					></treeTool>
+				</el-tree>
+			</el-card>
+		</div>
+		<!-- 弹框组件 -->
+		<!-- <el-dialog title="新增部门" :visible.sync="dialogShow"></el-dialog> -->
+		<AddDept ref="AddDept" @updata="initData"></AddDept>
+		<!-- /弹框组件 -->
+	</div>
 </template>
-
 <script>
-	import ArtWindow from "./components/art-window.vue";
-	import TreeTools from "./components/treetools.vue";
-	import { getDepartmentListApi, getDepartmentInfoApi } from "@/api/department";
-	import { ToTreeObj } from "@/utils/MyFunction";
+	import { toTree } from "@/utils/myfunction";
+	import { GetDepartmentListApi, GetDepartmentInfoApi } from "@/api/department";
+	import treeTool from "./components/tree-tools.vue";
+	import AddDept from "./components/add-dept.vue";
 	export default {
-		name: "HRSaasIndex",
-		components: { TreeTools, ArtWindow },
+		name: "Department",
+		components: { treeTool, AddDept },
 		data() {
 			return {
+				dialogShow: false,
 				company: {
 					id: "",
 					name: "江苏传智播客教育科技股份有限公司",
 					manager: "负责人",
 				},
 				departs: [],
-				dialogVisible: true,
 			};
 		},
-
-		mounted() {},
 		created() {
 			this.initData();
 		},
 		methods: {
 			async initData() {
-				const { depts, companyName } = await getDepartmentListApi();
+				let { companyName, depts } = await GetDepartmentListApi();
 				this.company.name = companyName;
-				this.departs = ToTreeObj(depts, "");
+				this.departs = toTree(depts, "");
 			},
-			AddDepart(item) {
-				this.$refs.window.dialogVisible = true;
-				this.$refs.window.formData.pid = item.id;
+			AddDeptFn(val) {
+				this.$refs.AddDept.dialogShow = true;
+				this.$refs.AddDept.fromData.pid = val.id;
 			},
-			async EditDepart(id) {
-				this.$refs.window.dialogVisible = true;
-				const res = await getDepartmentInfoApi(id);
-				this.$refs.window.formData = res;
+			//
+			async EditDept(id) {
+				const res = await GetDepartmentInfoApi(id);
+				this.$refs.AddDept.fromData = res;
+				console.log(res);
+				this.$refs.AddDept.dialogShow = true;
 			},
 		},
 	};
 </script>
 
-<style lang="less" scoped>
+<style>
 </style>

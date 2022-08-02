@@ -1,3 +1,4 @@
+
 #app {
 
   .main-container {
@@ -19,7 +20,7 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
-    background: -webkit-linear-gradient(bottom, #3d6df8, #5b8cff);
+     background: -webkit-linear-gradient(bottom, #3d6df8, #5b8cff);
     // reset element-ui css
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
@@ -63,7 +64,7 @@
       margin-left: -2px;
     }
 
-       .el-menu {
+    .el-menu {
       border: none;
       height: 100%;
       width: 100% !important;
@@ -96,7 +97,8 @@
     .submenu-title-noDropdown,
     .el-submenu__title {
       &:hover {
-        background-color: $menuHover !important;
+        background-color:#fff !important;
+        color: #3d6df8;
       }
     }
 
@@ -107,7 +109,7 @@
     & .nest-menu .el-submenu>.el-submenu__title,
     & .el-submenu .el-menu-item {
       min-width: $sideBarWidth !important;
-      background-color: $subMenuBg !important;
+      // background-color: $subMenuBg !important;
 
       &:hover {
         background-color: $subMenuHover !important;

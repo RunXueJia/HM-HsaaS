@@ -1,16 +1,12 @@
 <template>
 	<el-row type="flex" justify="space-between" style="width:100%">
+		<div>{{treeNode.name}}</div>
 		<el-col :span="6">
-			<span>{{Data.name}}</span>
-		</el-col>
-		<el-col :span="6">
-			<el-row type="flex" justify="end" style="width:140px">
-				<!-- 两个内容 -->
-				<el-col :span="12">{{Data.manager }}</el-col>
+			<el-row type="flex" justify="end">
+				<el-col :span="12">{{treeNode.manager }}</el-col>
 				<el-col :span="12">
-					<!-- 下拉菜单 element -->
-					<el-dropdown @command="ClickHandler">
-						<span>
+					<el-dropdown @command="clickHandler">
+						<span class="el-dropdown-link">
 							操作
 							<i class="el-icon-arrow-down" />
 						</span>
@@ -30,9 +26,9 @@
 <script>
 	import { DelDepartmentApi } from "@/api/department";
 	export default {
-		name: "HRSaasTreetools",
+		name: "treeTool",
 		props: {
-			Data: {
+			treeNode: {
 				type: Object,
 				required: true,
 			},
@@ -41,30 +37,25 @@
 				default: false,
 			},
 		},
-		data() {
-			return {};
-		},
-
-		mounted() {},
-
 		methods: {
-			async ClickHandler(val) {
+			async clickHandler(val) {
+				// console.log("ok");
 				if (val === "add") {
-					this.$emit("AddDepart", this.Data);
-				}
-				if (val === "edit") {
-					this.$emit("EditDepart", this.Data.id);
+					this.$emit("addDept", this.treeNode);
 				}
 				if (val === "del") {
-					await this.$confirm("确定删除吗");
-					await DelDepartmentApi(this.Data.id);
+					await this.$confirm("确认删除吗");
+					await DelDepartmentApi(this.treeNode.id);
 					this.$message.success("删除成功");
-					this.$emit("UpdateList");
+					this.$emit("updatelist");
+				}
+				if (val === "edit") {
+					this.$emit("EditDept", this.treeNode.id);
 				}
 			},
 		},
 	};
 </script>
 
-<style lang="scss" scoped>
+<style>
 </style>

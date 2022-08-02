@@ -14,4 +14,3 @@ module.exports = {
    */
   sidebarLogo: true // 显示logo
 }
-

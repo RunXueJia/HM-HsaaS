@@ -1,7 +1,8 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'HRSAAS_TOKEN'
-const TimeKey = 'HRSAAS_LOAD_TIME'
+const TokenKey = 'HRSAAS-TOKEN'
+const loadTimeKey = 'HRSAAS-LOAD-TIME'
+
 export function getToken() {
   return Cookies.get(TokenKey)
 }
@@ -14,9 +15,9 @@ export function removeToken() {
   return Cookies.remove(TokenKey)
 }
 
-export const setTimeKey = () => {
-  Cookies.set(TimeKey, Date.now())
+export function setTimeToken() {
+  Cookies.set(loadTimeKey, Date.now())
 }
-export const getTimeKey = () => Cookies.get(TimeKey)
-
-
+export function getTimeToken() {
+  return Cookies.get(loadTimeKey)
+}

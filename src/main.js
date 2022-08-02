@@ -14,36 +14,26 @@ import router from './router'
 
 import '@/icons' // icon
 import '@/permission' // permission control
+//全局组件
+import component from '@/components'
+Vue.use(component)
 //引入自定义指令
 import * as directive from '@/directive'
 Object.keys(directive).forEach(key => {
   Vue.directive(key, directive[key])
 })
 //引入过滤器
-import * as filters from '@/utils/filters'
+import * as filters from '@/filters'
+// console.log(filters);
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
 })
-//引入全局组件
-import compontnes from '@/components'
-Vue.use(compontnes)
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
-// if (process.env.NODE_ENV === 'production') {
-//   const { mockXHR } = require('../mock')
-//   mockXHR()
-// }
+
 
 // set ElementUI lang to EN
-Vue.use(ElementUI,)
+// Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
+Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 

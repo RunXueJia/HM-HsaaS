@@ -21,7 +21,7 @@
 				<el-input
 					ref="mobile"
 					v-model="loginForm.mobile"
-					placeholder="Username"
+					placeholder="手机号"
 					name="mobile"
 					type="text"
 					tabindex="1"
@@ -38,7 +38,7 @@
 					ref="password"
 					v-model="loginForm.password"
 					:type="passwordType"
-					placeholder="Password"
+					placeholder="密码"
 					name="password"
 					tabindex="2"
 					auto-complete="on"
@@ -66,20 +66,22 @@
 </template>
 
 <script>
-	import { validMobile } from "@/utils/validate";
+	import { validUsername, validateMobile } from "@/utils/validate";
 
 	export default {
 		name: "Login",
 		data() {
-			// const validateUsername = (rule, value, callback) => {
-			//   if (!validUsername(value)) {
-			//     callback(new Error('Please enter the correct user name'))
-			//   } else {
-			//     callback()
-			//   }
-			// },
-			const validateUsername = (rule, val, cb) =>
-				validMobile(val) ? cb() : cb(new Error("手机号格式不正确"));
+			const validateMobileRule = (rule, value, callback) => {
+				return validateMobile(value) ? callback() : callback("手机号格式不正确");
+			};
+			/* 		const validatePassword = (rule, value, callback) => {
+																																if (value.length < 6) {
+																																	callback(new Error("The password can not be less than 6 digits"));
+																																} else {
+																																	callback();
+																																}
+																															}; */
+
 			return {
 				loginForm: {
 					mobile: "13800000002",
@@ -87,8 +89,15 @@
 				},
 				loginRules: {
 					mobile: [
-						{ required: true, trigger: "blur", message: "请输入手机号" },
-						{ validator: validateUsername, trigger: "blur" },
+						{
+							required: true,
+							trigger: "blur",
+							message: "请输入手机号",
+						},
+						{
+							validator: validateMobileRule,
+							trigger: "blur",
+						},
 					],
 					password: [{ required: true, trigger: "blur", message: "请输入密码" }],
 				},
@@ -117,40 +126,20 @@
 				});
 			},
 			async handleLogin() {
-				this.loading = true;
-				// console.log(this.loginForm);
 				try {
-					this.$refs.loginForm.validate();
+					await this.$refs.loginForm.validate();
 				} catch (error) {
-					this.loading = false;
 					return console.log(error);
 				}
+				this.loading = true;
 				try {
-					await this.$store.dispatch("user/LoginFn", this.loginForm);
-					this.loading = false;
+					await this.$store.dispatch("user/loginFn", this.loginForm);
 					this.$router.push({ path: this.redirect || "/" });
 				} catch (error) {
 					this.loading = false;
-					return console.log(error);
+					return; // console.log(error);
 				}
-
-				// this.$refs.loginForm.validate((valid) => {
-				// 	if (valid) {
-				// 		this.loading = true;
-				// 		this.$store
-				// 			.dispatch("user/login", this.loginForm)
-				// 			.then(() => {
-				// 				this.$router.push({ path: this.redirect || "/" });
-				// 				this.loading = false;
-				// 			})
-				// 			.catch(() => {
-				// 				this.loading = false;
-				// 			});
-				// 	} else {
-				// 		console.log("error submit!!");
-				// 		return false;
-				// 	}
-				// });
+				this.loading = false;
 			},
 		},
 	};
@@ -161,8 +150,9 @@
 	/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
 
 	$bg: #283443;
+	$light_gray: #68b0fe;
 	$cursor: #fff;
-	$light_gray: #68b0fe; // 将输入框颜色改成蓝色
+
 	@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
 		.login-container .el-input input {
 			color: $cursor;
@@ -194,22 +184,21 @@
 				}
 			}
 		}
-
+		.el-form-item__error {
+			color: #fff;
+		}
 		.el-form-item {
 			border: 1px solid rgba(255, 255, 255, 0.1);
 			background: rgba(255, 255, 255, 0.7); // 输入登录表单的背景色
 			border-radius: 5px;
 			color: #454545;
 		}
-	}
-	.el-form-item__error {
-		color: #fff;
-	}
-	.loginBtn {
-		background: #407ffe;
-		height: 64px;
-		line-height: 32px;
-		font-size: 24px;
+		.loginBtn {
+			background: #407ffe;
+			height: 64px;
+			line-height: 32px;
+			font-size: 24px;
+		}
 	}
 </style>
 

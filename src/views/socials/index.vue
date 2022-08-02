@@ -1,22 +1,10 @@
 <template>
-	<div>
-		<h2>社保管理</h2>
-	</div>
+	<h2>社保</h2>
 </template>
 
 <script>
-	export default {
-		name: "HRSaasIndex",
-
-		data() {
-			return {};
-		},
-
-		mounted() {},
-
-		methods: {},
-	};
+	export default {};
 </script>
 
-<style lang="less" scoped>
+<style>
 </style>

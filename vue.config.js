@@ -28,8 +28,7 @@ module.exports = {
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
-  // lintOnSave: process.env.NODE_ENV === 'development',
-  lintOnSave: false,
+  lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
     port: port,
@@ -42,10 +41,11 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://ihrm.itheima.net/',
+        // target: 'http://192.168.19.96:3000/',
         changeOrigin: true,
         // pathRewrite: {
         //   '^api': '',
-        // },
+        // }
       }
     },
   },

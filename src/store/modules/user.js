@@ -1,46 +1,48 @@
-import { LoginApi, getUserInfoApi, getUserInfoByIdApi } from '@/api/user'
-import { getToken, setToken, removeToken, setTimeKey } from '@/utils/auth'
+import { loginApi, GetUserInfoApi, GetUserBaseInfoApi } from '@/api/user'
+import { setToken, getToken, removeToken, setTimeToken } from '@/utils/auth'
 const state = {
   token: getToken(),
   userInfo: {}
-}
+};
 const mutations = {
-  setToken(state, token) {
+  setTokenFn(state, token) {
     state.token = token
     setToken(token)
-    setTimeKey()
+    setTimeToken()
   },
-  //设置用户信息
+  removeTokenFn(state) {
+    state.token = null
+    removeToken()
+  },
   setUserInfo(state, data) {
     state.userInfo = data
   },
   removeUserInfo(state) {
     state.userInfo = {}
   },
-  removeToken(state) {
-    state.token = null
-    removeToken()
-  }
-}
+
+};
 const actions = {
-  async LoginFn(context, data) {
-    const res = await LoginApi(data)
-    context.commit('setToken', res)
+  async loginFn(context, data) {
+    let res = await loginApi(data)
+    context.commit('setTokenFn', res)
+    // console.log(res);
   },
-  async getUserInfoFn(context) {
-    const res = await getUserInfoApi()
-    const res2 = await getUserInfoByIdApi(res.userId)
+  async GetUserInfoFn(context) {
+    let res = await GetUserInfoApi()
+    let res2 = await GetUserBaseInfoApi(res.userId)
+    // console.log(res);
     context.commit('setUserInfo', { ...res, ...res2 })
   },
-  quit(context) {
-    context.commit('removeToken')
-    context.commit('removeUserInfo')
+  quit({ commit }) {
+    commit('removeUserInfo')
+    commit('removeTokenFn')
   }
 }
 export default {
   namespaced: true,
   state,
   mutations,
-  actions,
+  actions
 }
 

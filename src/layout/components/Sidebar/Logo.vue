@@ -48,12 +48,12 @@
 		& .sidebar-logo-link {
 			height: 100%;
 			width: 100%;
-			.sidebar-logo {
+
+			& .sidebar-logo {
 				width: 140px;
 				vertical-align: middle;
 				margin-right: 12px;
 			}
-			// 大图样式
 
 			& .sidebar-title {
 				display: inline-block;
@@ -74,6 +74,5 @@
 				height: 32px;
 			}
 		}
-		// 小图样式
 	}
 </style>
