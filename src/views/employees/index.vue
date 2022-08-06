@@ -2,16 +2,35 @@
 	<div>
 		<PageTools :text="`一共${total}条记录`">
 			<template>
-				<el-button @click="exportExcle" plain size="small" type="primary">普通excel导出</el-button>
 				<el-button
+					v-if="BtnPermission('employees-export')"
+					@click="exportExcle"
+					plain
+					size="small"
+					type="primary"
+				>普通excel导出</el-button>
+				<el-button
+					v-if="BtnPermission('employees-export')"
 					:disabled="checklist.length === 0"
 					@click="fzbt"
 					plain
 					size="small"
 					type="success"
 				>复杂excel导出</el-button>
-				<el-button @click="$router.push('/import?type=user')" plain size="small" type="info">excel导入</el-button>
-				<el-button @click="$refs.artWindow.outerVisible =true" plain size="small" type="warning">新增员工</el-button>
+				<el-button
+					v-if="BtnPermission('employees-import')"
+					@click="$router.push('/import?type=user')"
+					plain
+					size="small"
+					type="info"
+				>excel导入</el-button>
+				<el-button
+					v-if="BtnPermission('employees-add')"
+					@click="$refs.artWindow.outerVisible =true"
+					plain
+					size="small"
+					type="warning"
+				>新增员工</el-button>
 			</template>
 		</PageTools>
 
@@ -23,6 +42,16 @@
 				<el-table-column prop="username" label="姓名" sortable />
 				<el-table-column prop="mobile" label="手机号" sortable />
 				<el-table-column prop="workNumber" label="工号" sortable />
+				<el-table-column label="头像" sortable>
+					<template slot-scope="{row}">
+						<img
+							v-imgerror="require('@/assets/common/bigUserHeader.png')"
+							:src="row.staffPhoto"
+							style="height : 100px"
+							@click="showErweimaFn(row.staffPhoto)"
+						/>
+					</template>
+				</el-table-column>
 				<el-table-column prop="formOfEmployment" :formatter="formOfEmployment" label="聘用形式" sortable>
 					<!-- <template slot-scope="{row}">{{row.formOfEmployment*1 ===1 ? '正式' : '非正式' }}</template> -->
 				</el-table-column>
@@ -33,12 +62,22 @@
 
 				<el-table-column prop="name" label="操作" sortable fixed="right" width="280">
 					<template slot-scope="{row}">
-						<el-button @click="$router.push('/employees/detail/' + row.id)" type="text" size="small">查看</el-button>
+						<el-button
+							v-if="BtnPermission('employees-edit')"
+							@click="$router.push('/employees/detail/' + row.id)"
+							type="text"
+							size="small"
+						>查看</el-button>
 						<el-button type="text" size="small">转正</el-button>
 						<el-button type="text" size="small">调岗</el-button>
 						<el-button type="text" size="small">离职</el-button>
-						<el-button type="text" size="small">角色</el-button>
-						<el-button type="text" size="small" @click="del(row.id)">删除</el-button>
+						<el-button @click="showAssign(row.id)" type="text" size="small">角色</el-button>
+						<el-button
+							v-if="BtnPermission('employees-del')"
+							type="text"
+							size="small"
+							@click="del(row.id)"
+						>删除</el-button>
 					</template>
 				</el-table-column>
 			</el-table>
@@ -60,19 +99,26 @@
 		<!-- 弹窗 -->
 		<Addenployees @updata="initData" ref="artWindow" />
 		<!-- /弹窗 -->
+		<el-dialog :visible.sync="showErweima" title="图片二维码" ref="erweima">
+			<canvas ref="canvas"></canvas>
+		</el-dialog>
+		<AssignRole ref="assign" />
 	</div>
 </template>
 
 <script>
+	import Qrcode from "qrcode";
+	import AssignRole from "./components/assign-role.vue";
 	import Addenployees from "./components/addenployees.vue";
 	import enployeesConst from "@/api/constant/employees";
-	import { GetUserListApi, DelUserApi } from "@/api/employees";
+	import { GetUserListApi, DelUserApi, GetUserInfoApi } from "@/api/employees";
 	import { formatDate } from "@/filters";
 	export default {
 		name: "employees",
-		components: { Addenployees },
+		components: { Addenployees, AssignRole },
 		data() {
 			return {
+				showErweima: false,
 				checklist: [],
 				list: [],
 				pageData: {
@@ -86,6 +132,12 @@
 			this.initData();
 		},
 		methods: {
+			async showAssign(id) {
+				const { roleIds } = await GetUserInfoApi(id);
+				this.$refs.assign.checkList = roleIds;
+				this.$refs.assign.userId = id;
+				this.$refs.assign.showRoleDialog = true;
+			},
 			//fuzbiaotou
 			fzbt() {
 				import("@/vendor/Export2Excel").then(async (excle) => {
@@ -193,6 +245,15 @@
 					this.pageData.page--;
 				}
 				this.initData();
+			},
+			showErweimaFn(url) {
+				if (!url.trim()) return;
+				this.showErweima = true;
+				this.$nextTick(() => {
+					Qrcode.toCanvas(this.$refs.canvas, url, (error) => {
+						if (error) return this.$message.warning("生成失败");
+					});
+				});
 			},
 		},
 	};

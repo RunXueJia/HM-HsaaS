@@ -17,7 +17,7 @@
 
 						<el-table-column label="操作">
 							<template slot-scope="{row}">
-								<el-button size="small" type="success">分配权限</el-button>
+								<el-button @click="EditPermissionFn(row.id)" size="small" type="success">分配权限</el-button>
 								<el-button size="small" @click="edit(row)" type="info">编辑</el-button>
 								<el-button size="small" @click="del(row)" type="warning">删除</el-button>
 							</template>
@@ -59,10 +59,13 @@
 		<!-- 新增/修改 -->
 		<addRoles @updateList="initData" ref="addRolesVue"></addRoles>
 		<!--/ 新增/修改 -->
+		<!--  -->
+		<EditPermission ref="EditPermission" />
 	</div>
 </template>
 
 <script>
+	import EditPermission from "./components/editpermission.vue";
 	import addRoles from "./components/addRoles.vue";
 	import {
 		GetRoleListApi,
@@ -72,7 +75,7 @@
 	} from "@/api/setting";
 	export default {
 		name: "setting",
-		components: { addRoles },
+		components: { addRoles, EditPermission },
 		data() {
 			return {
 				total: 0,
@@ -90,6 +93,13 @@
 			this.getCompanyFn();
 		},
 		methods: {
+			async EditPermissionFn(id) {
+				const { permIds } = await GetRoleInfoApi(id);
+				// console.log(res); //permIds
+				this.$refs.EditPermission.checkList = permIds;
+				this.$refs.EditPermission.userId = id;
+				this.$refs.EditPermission.dialogVisible = true;
+			},
 			async del(row) {
 				//删除
 				try {

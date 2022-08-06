@@ -58,7 +58,7 @@
 				<el-col :span="12">
 					<el-form-item label="员工头像">
 						<!-- 放置上传图片 -->
-						<uploadImage />
+						<uploadImage ref="ygtx" />
 					</el-form-item>
 				</el-col>
 			</el-row>
@@ -90,7 +90,7 @@
 
 				<el-form-item label="员工照片">
 					<!-- 放置上传图片 -->
-					<uploadImage />
+					<uploadImage ref="ygzp" />
 				</el-form-item>
 				<el-form-item label="国家/地区">
 					<el-select v-model="formData.nationalArea" class="inputW2">
@@ -386,25 +386,63 @@
 		methods: {
 			async initData() {
 				const res = await getPersonalDetail(this.userId);
+				// console.log(res);
+
+				if (res.staffPhoto && res.staffPhoto.trim()) {
+					this.$refs.ygzp.fileList = [
+						{
+							name: "",
+							url: res.staffPhoto,
+							upload: true,
+						},
+					];
+				}
 				this.formData = res;
 			},
 			async saveUser() {
 				try {
+					// const isUpload = this.$refs.ygtx.fileList.every((item) => item.upload);
+					if (
+						this.$refs.ygtx.fileList.length &&
+						!this.$refs.ygtx.fileList[0].upload
+					) {
+						return this.$message.warning("有图片正在上传");
+					}
+					if (
+						this.$refs.ygtx.fileList[0] &&
+						this.$refs.ygtx.fileList[0].url.trim()
+					) {
+						this.userInfo.staffPhoto = this.$refs.ygtx.fileList[0].url;
+					} else {
+						this.userInfo.staffPhoto = " ";
+					}
+					this.userInfo.id = this.userId;
 					await saveUserDetailById(this.userInfo);
 				} catch (error) {
 					return;
 				}
 				this.$message.success("更新成功");
-				this.$emit("update");
+				// this.$emit("update");
 			},
 			async savePersonal() {
+				if (
+					this.$refs.ygzp.fileList.length &&
+					!this.$refs.ygzp.fileList[0].upload
+				) {
+					return this.$message.warning("有图片正在上传");
+				}
 				try {
+					if (this.$refs.ygzp.fileList[0].url.trim()) {
+						this.formData.staffPhoto = this.$refs.ygzp.fileList[0].url;
+					} else {
+						this.formData.staffPhoto = " ";
+					}
 					await updatePersonal(this.formData);
 				} catch (error) {
 					return;
 				}
 				this.$message.success("更新成功");
-				this.initData();
+				// this.initData();
 			},
 		},
 	};

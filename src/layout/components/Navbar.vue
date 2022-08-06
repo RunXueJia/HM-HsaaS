@@ -9,6 +9,7 @@
 		</div>
 
 		<div class="right-menu">
+			<screen-full class="right-menu-item" />
 			<el-dropdown class="avatar-container" trigger="click">
 				<div class="avatar-wrapper">
 					<img v-imgerror="defaultImg" :src="staffPhoto" class="user-avatar" />
@@ -123,7 +124,7 @@
 				height: 100%;
 				font-size: 18px;
 				color: #5a5e66;
-				vertical-align: text-bottom;
+				vertical-align: middle;
 
 				&.hover-effect {
 					cursor: pointer;
@@ -139,7 +140,7 @@
 				margin-right: 30px;
 
 				.avatar-wrapper {
-					margin-top: 5px;
+					// margin-top: 5px;
 					position: relative;
 
 					.user-avatar {
@@ -162,7 +163,7 @@
 						cursor: pointer;
 						position: absolute;
 						right: -20px;
-						top: 25px;
+						top: 20px;
 						font-size: 12px;
 					}
 				}

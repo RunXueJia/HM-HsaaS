@@ -36,3 +36,9 @@ export const getCompanyApi = (id) => request({
     method: 'get',
     url: `/company/${id}`
 })
+// /company/{id}
+export const setPermissionApi = (data) => request({
+    method: 'put',
+    url: `/sys/role/assignPrem`,
+    data
+})

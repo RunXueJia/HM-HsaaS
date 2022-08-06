@@ -1,5 +1,6 @@
 import { loginApi, GetUserInfoApi, GetUserBaseInfoApi } from '@/api/user'
 import { setToken, getToken, removeToken, setTimeToken } from '@/utils/auth'
+import { resetRouter } from '@/router';
 const state = {
   token: getToken(),
   userInfo: {}
@@ -33,10 +34,12 @@ const actions = {
     let res2 = await GetUserBaseInfoApi(res.userId)
     // console.log(res);
     context.commit('setUserInfo', { ...res, ...res2 })
+    return res
   },
   quit({ commit }) {
     commit('removeUserInfo')
     commit('removeTokenFn')
+    resetRouter()
   }
 }
 export default {

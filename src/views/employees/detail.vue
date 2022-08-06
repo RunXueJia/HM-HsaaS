@@ -18,9 +18,23 @@
 						</el-form>
 					</el-tab-pane>
 					<el-tab-pane label="个人详情">
+						<el-row type="flex" justify="end">
+							<el-tooltip content="打印个人基本信息">
+								<router-link :to="`/employees/print/${userId}?type=personal`">
+									<i class="el-icon-printer" />
+								</router-link>
+							</el-tooltip>
+						</el-row>
 						<UserInfo @update="initData" ref="userinfo" />
 					</el-tab-pane>
 					<el-tab-pane label="岗位信息">
+						<el-row type="flex" justify="end">
+							<el-tooltip content="打印岗位信息">
+								<router-link :to="`/employees/print/${userId}?type=job`">
+									<i class="el-icon-printer" />
+								</router-link>
+							</el-tooltip>
+						</el-row>
 						<component :is="'JobInfo'"></component>
 					</el-tab-pane>
 				</el-tabs>
@@ -52,8 +66,18 @@
 		methods: {
 			async initData() {
 				const res = await getUserDetailById(this.userId);
+				// console.log(res);
 				this.formData = res;
 				this.$refs.userinfo.userInfo = res;
+				if (res.staffPhoto && res.staffPhoto.trim()) {
+					this.$refs.userinfo.$refs.ygtx.fileList = [
+						{
+							url: res.staffPhoto,
+							name: "",
+							upload: true,
+						},
+					];
+				}
 				// console.log(res);
 			},
 			async submit() {
