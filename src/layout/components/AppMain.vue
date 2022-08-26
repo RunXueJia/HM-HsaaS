@@ -27,7 +27,7 @@
 		padding: 20px;
 	}
 	.fixed-header + .app-main {
-		padding-top: 50px;
+		padding-top: 84px;
 	}
 </style>
 

@@ -5,7 +5,7 @@
 			<div>
 				<div class="fl headL">
 					<div class="headImg">
-						<img :imgerror="defaultImg" :src="staffPhoto" />
+						<img v-imgerror="defaultImg" :src="staffPhoto" />
 					</div>
 					<div class="headInfoTip">
 						<p class="firstChild">早安，{{userName}}，祝你开心每一天！</p>
@@ -138,7 +138,7 @@
 		},
 		data() {
 			return {
-				defaultImg: require("@/assets/common/head.jpg"),
+				defaultImg: require("@/assets/common/huangchengzi.png"),
 			};
 		},
 	};

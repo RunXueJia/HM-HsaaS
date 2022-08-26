@@ -5,6 +5,36 @@ const defaultSettings = require('./src/settings.js')
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
+let externals = {}
+let cdn = {
+  js: [],
+  css: []
+}
+if (process.env.NODE_ENV === 'production') {
+  externals = {
+    // 键：值
+    // 键是包名，值是该包在全局下得标识符
+    // 比如： jQuery:'$'
+    // CDN 资源优化注意点：
+    // 1. 代码备份
+    // 2. 找到和package.json里面包版本号一致的cdn资源。建议 去bootcdn 找
+    // 3. 确认CDN资源在全局的变量名称
+    // 4. 注意资源之间的引用关系(比如element-ui配置cdn就必须vue.js也要配置cdn才可以，比如vue-router一定要放在vue之后)
+    vue: "Vue",
+    echarts: "echarts",
+    "element-ui": "ELEMENT",
+    xlsx: "XLSX",
+  };
+  cdn = {
+    js: [
+      "https://cdn.jsdelivr.net/npm/vue@2",
+      "https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js",
+      "https://cdn.bootcdn.net/ajax/libs/element-ui/2.15.9/index.min.js",
+      "https://cdn.bootcdn.net/ajax/libs/xlsx/0.18.5/xlsx.mini.min.js",
+    ],
+    css: ["https://unpkg.com/element-ui@2.15.9/lib/theme-chalk/index.css"],
+  };
+}
 
 const name = defaultSettings.title || 'vue Admin Template' // page title
 
@@ -41,7 +71,7 @@ module.exports = {
     proxy: {
       '/api': {
         // target: 'http://ihrm.itheima.net/',
-        target: 'http://192.168.19.96:3000/',
+        target: 'http://127.0.0.1:3000/',
         changeOrigin: true,
         // pathRewrite: {
         //   '^api': '',
@@ -57,9 +87,14 @@ module.exports = {
       alias: {
         '@': resolve('src')
       }
-    }
+    },
+    externals,
   },
   chainWebpack(config) {
+    config.plugin('html').tap(args => {
+      args[0].cdn = cdn
+      return args
+    })
     // it can improve the speed of the first screen, it is recommended to turn on preload
     config.plugin('preload').tap(() => [
       {
